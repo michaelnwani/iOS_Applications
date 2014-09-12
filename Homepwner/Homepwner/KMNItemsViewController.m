@@ -38,15 +38,28 @@
     
     //Create a new MNItem and add it to the store
     MNItem *newItem = [[KMNItemStore sharedStore] createItem];
+//
+//    //Figure out where that item is in the array
+//    NSInteger lastRow = [[[KMNItemStore sharedStore] allItems] indexOfObject:newItem];
+//
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:lastRow inSection:0];
+//    
+//    //Insert this new row into the table.
+//    [self.tableView insertRowsAtIndexPaths:@[indexPath]
+//                          withRowAnimation:UITableViewRowAnimationTop];
     
-    //Figure out where that item is in the array
-    NSInteger lastRow = [[[KMNItemStore sharedStore] allItems] indexOfObject:newItem];
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:lastRow inSection:0];
+    KMNDetailViewController *detailViewController = [[KMNDetailViewController alloc] initForNewItem:YES];
+    detailViewController.item = newItem;
     
-    //Insert this new row into the table.
-    [self.tableView insertRowsAtIndexPaths:@[indexPath]
-                          withRowAnimation:UITableViewRowAnimationTop];
+    //That's all. Really. It runs a block of code
+    detailViewController.dismissBlock = ^{
+        [self.tableView reloadData];
+    };
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:detailViewController];
+    navController.modalPresentationStyle = UIModalPresentationFormSheet; //For iPad
+    navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve; //A fade-in style for modal view controllers. Default is CoverVertical (slide up from the bottom)
+    [self presentViewController:navController animated:YES completion:NULL];
 }
 
 //-(IBAction)toggleEditingMode:(id)sender
@@ -152,7 +165,9 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    KMNDetailViewController *detailViewController = [[KMNDetailViewController alloc] init];
+//    KMNDetailViewController *detailViewController = [[KMNDetailViewController alloc] init];
+    
+    KMNDetailViewController *detailViewController = [[KMNDetailViewController alloc] initForNewItem:NO];
     
     NSArray *items = [[KMNItemStore sharedStore] allItems];
     MNItem *selectedItem = items[indexPath.row];

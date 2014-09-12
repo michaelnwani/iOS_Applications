@@ -20,10 +20,16 @@
 {
     static KMNImageStore *sharedStore;
     
-    if (!sharedStore)
-    {
+//    if (!sharedStore)
+//    {
+//        sharedStore = [[self alloc] initPrivate];
+//    }
+    
+    static dispatch_once_t onceToken; //This is to protect the singleton (that there should only be one instance of KMNImageStore in the case of a multi-threaded application
+    dispatch_once(&onceToken, ^{
         sharedStore = [[self alloc] initPrivate];
-    }
+    });
+    
     return sharedStore;
 }
 

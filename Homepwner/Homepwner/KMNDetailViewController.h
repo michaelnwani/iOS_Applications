@@ -10,9 +10,13 @@
 @class MNItem;
 
 @interface KMNDetailViewController : UIViewController
-<UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate>
+<UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate, UIPopoverControllerDelegate>
 //UIImagePickerController's delegate propety is inherited from its superclass, which is UINavigationController
 
+-(instancetype)initForNewItem:(BOOL)isNew;
+
 @property (nonatomic, strong) MNItem *item;
+
+@property (nonatomic, copy) void (^dismissBlock)(void);
 
 @end

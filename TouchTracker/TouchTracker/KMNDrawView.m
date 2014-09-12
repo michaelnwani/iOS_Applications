@@ -94,6 +94,7 @@
         [self strokeLine:self.selectedLine];
     }
     
+
 }
 
 -(void)touchesBegan:(NSSet *)touches
@@ -163,7 +164,8 @@
         
         [self.finishedLines addObject:line];
         [self.linesInProgress removeObjectForKey:key];
-    }
+        
+}
 //SINGLE TOUCH IMPLEMENTATION
 //    [self.finishedLines addObject:self.currentLine];
 //    
@@ -327,5 +329,18 @@
         [gr setTranslation:CGPointZero inView:self]; //changing the translation value resets the velocity of the pan
         
     }
+}
+
+-(int)numberOfLines
+{
+    int count = 0;
+    
+    // Check that they are non-nil before we add their counts...
+    if (self.linesInProgress && self.finishedLines)
+    {
+        count = [self.linesInProgress count] + [self.finishedLines count];
+    }
+    
+    return count;
 }
 @end
