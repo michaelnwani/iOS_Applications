@@ -18,5 +18,6 @@
 -(MNItem *)createItem;
 -(void)removeItem:(MNItem *)item;
 -(void)moveItemAtIndex:(NSInteger )fromIndex toIndex:(NSInteger)toIndex;
+-(BOOL)saveChanges;
 
 @end

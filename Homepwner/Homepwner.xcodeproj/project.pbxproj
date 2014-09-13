@@ -26,6 +26,9 @@
 		02EF8FEE19BE637100432255 /* KMNDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02EF8FEC19BE637100432255 /* KMNDetailViewController.m */; };
 		02EF8FEF19BE637100432255 /* KMNDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02EF8FED19BE637100432255 /* KMNDetailViewController.xib */; };
 		02EF8FF219BE9BD300432255 /* KMNImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 02EF8FF119BE9BD300432255 /* KMNImageStore.m */; };
+		02F8169719C3D8FC00548C36 /* KMNItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F8169619C3D8FC00548C36 /* KMNItemCell.m */; };
+		02F8169919C3DB8F00548C36 /* KMNItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02F8169819C3DB8F00548C36 /* KMNItemCell.xib */; };
+		02F8169C19C3F76500548C36 /* KMNImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F8169B19C3F76500548C36 /* KMNImageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +70,11 @@
 		02EF8FED19BE637100432255 /* KMNDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KMNDetailViewController.xib; sourceTree = "<group>"; };
 		02EF8FF019BE9BD300432255 /* KMNImageStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMNImageStore.h; sourceTree = "<group>"; };
 		02EF8FF119BE9BD300432255 /* KMNImageStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMNImageStore.m; sourceTree = "<group>"; };
+		02F8169519C3D8FB00548C36 /* KMNItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMNItemCell.h; sourceTree = "<group>"; };
+		02F8169619C3D8FC00548C36 /* KMNItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMNItemCell.m; sourceTree = "<group>"; };
+		02F8169819C3DB8F00548C36 /* KMNItemCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KMNItemCell.xib; sourceTree = "<group>"; };
+		02F8169A19C3F76500548C36 /* KMNImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KMNImageViewController.h; path = ../KMNImageViewController.h; sourceTree = "<group>"; };
+		02F8169B19C3F76500548C36 /* KMNImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KMNImageViewController.m; path = ../KMNImageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +148,11 @@
 				02EF8FED19BE637100432255 /* KMNDetailViewController.xib */,
 				02EF8FF019BE9BD300432255 /* KMNImageStore.h */,
 				02EF8FF119BE9BD300432255 /* KMNImageStore.m */,
+				02F8169519C3D8FB00548C36 /* KMNItemCell.h */,
+				02F8169619C3D8FC00548C36 /* KMNItemCell.m */,
+				02F8169819C3DB8F00548C36 /* KMNItemCell.xib */,
+				02F8169A19C3F76500548C36 /* KMNImageViewController.h */,
+				02F8169B19C3F76500548C36 /* KMNImageViewController.m */,
 				02EA47E719BCDCD700554C10 /* Images.xcassets */,
 				02EA47DC19BCDCD700554C10 /* Supporting Files */,
 			);
@@ -254,6 +267,7 @@
 				02EF8FEF19BE637100432255 /* KMNDetailViewController.xib in Resources */,
 				02151A8719BD1F9000B3A5E5 /* HeaderView.xib in Resources */,
 				02EA47E019BCDCD700554C10 /* InfoPlist.strings in Resources */,
+				02F8169919C3DB8F00548C36 /* KMNItemCell.xib in Resources */,
 				02EA47E819BCDCD700554C10 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,11 +287,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02F8169C19C3F76500548C36 /* KMNImageViewController.m in Sources */,
 				02EF8FEE19BE637100432255 /* KMNDetailViewController.m in Sources */,
 				02EF8FF219BE9BD300432255 /* KMNImageStore.m in Sources */,
 				02EA47E219BCDCD700554C10 /* main.m in Sources */,
 				02EA480919BCEE8800554C10 /* MNItem.m in Sources */,
 				02EA480619BCE6FB00554C10 /* KMNItemsViewController.m in Sources */,
+				02F8169719C3D8FC00548C36 /* KMNItemCell.m in Sources */,
 				02EA47E619BCDCD700554C10 /* KMNAppDelegate.m in Sources */,
 				02EA480C19BCF45C00554C10 /* KMNItemStore.m in Sources */,
 			);

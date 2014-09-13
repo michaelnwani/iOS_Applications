@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface MNItem : NSObject
+@interface MNItem : NSObject <NSCoding>
 
 
 +(instancetype)randomItem;
@@ -26,7 +26,9 @@
 @property (nonatomic) int valueInDollars;
 @property (nonatomic, readonly) NSDate *dateCreated;
 @property (nonatomic, copy) NSString *itemKey;
+@property (nonatomic, strong) UIImage *thumbnail;
 
+-(void)setThumbnailFromImage:(UIImage *)image;
 
 
 @end

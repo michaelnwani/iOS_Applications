@@ -38,6 +38,8 @@
     //Get picked image from info dictionary
     UIImage *image = info[UIImagePickerControllerOriginalImage]; //that's the key, returning the value
     
+    [self.item setThumbnailFromImage:image];
+    
     //Store the image in the KMNImageStore for this key
     [[KMNImageStore sharedStore] setImage:image forKey:self.item.itemKey];
     

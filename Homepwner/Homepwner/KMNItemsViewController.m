@@ -10,10 +10,16 @@
 #import "KMNItemStore.h"
 #import "MNItem.h"
 #import "KMNDetailViewController.h"
+#import "KMNItemCell.h"
+#import "KMNImageStore.h"
+#import "KMNImageViewController.h"
 
-@interface KMNItemsViewController ()
+
+@interface KMNItemsViewController () <UIPopoverControllerDelegate>
 
 //@property (nonatomic, strong) IBOutlet UIView *headerView;
+@property (strong, nonatomic) UIPopoverController *imagePopover;
+
 
 @end
 
@@ -132,17 +138,67 @@
 {
     
     //Get a new or recycled cell
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell" forIndexPath:indexPath];
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell" forIndexPath:indexPath]; OLD IMPLEMENTATION
+    
+    //Get a new or recycled cell
+    KMNItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KMNItemCell" forIndexPath:indexPath];
     
     //Set the text on the cell with the description of the item that is at the nth index of items, where n = row this cell
     //will appear in on the tableview
     NSArray *items = [[KMNItemStore sharedStore] allItems];
     MNItem *item = items[indexPath.row];
-    cell.textLabel.text = [item description];
+//    cell.textLabel.text = [item description]; all UITableViewCell's have this textLabel property for its 'main' content area
+    
+    //Configure the cell with the KMNItem
+    cell.nameLabel.text = item.itemName;
+    cell.serialNumberLabel.text = item.serialNumber;
+    cell.valueLabel.text = [NSString stringWithFormat:@"%d", item.valueInDollars];
+    cell.thumbnailView.image = item.thumbnail;
+
+    __weak KMNItemCell *weakCell = cell;
+    
+    cell.actionBlock = ^{
+        NSLog(@"Going to show image for %@", item);
+        
+        KMNItemCell *strongCell = weakCell;
+        
+        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
+        {
+            NSString *itemKey = item.itemKey;
+            
+            //If there is no image, we don't need to display anything
+            UIImage *img = [[KMNImageStore sharedStore] imageForKey:itemKey];
+            if (!img)
+            {
+                return;
+            }
+            
+            //Make a rectangle for the frame of the thumbnail relative to our table view
+            //Note: there will be a warning on this line that we'll soon discuss
+//            CGRect rect = [self.view convertRect:cell.thumbnailView.bounds fromView:cell.thumbnailView]; OLD IMPLEMENTATION
+            CGRect rect = [self.view convertRect:strongCell.thumbnailView.bounds fromView:strongCell.thumbnailView];
+            //bounds is to get the local coordinate system of the view
+            
+            //Create a new KMNImageViewController and set its image
+            KMNImageViewController *ivc = [[KMNImageViewController alloc] init];
+            ivc.image = img;
+            
+            //Present a 600x600 popover from the rect
+            self.imagePopover = [[UIPopoverController alloc] initWithContentViewController:ivc];
+            self.imagePopover.delegate = self;
+            self.imagePopover.popoverContentSize = CGSizeMake(600, 600);
+            [self.imagePopover presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        }
+    };
+    
     
     return cell;
 }
 
+-(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    self.imagePopover = nil;
+}
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -187,7 +243,13 @@
 {
     [super viewDidLoad];
     
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"];
+//    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"]; OLD IMPLEMENTATION
+    
+    //Load the NIB file
+    UINib *nib = [UINib nibWithNibName:@"KMNItemCell" bundle:nil]; //a container for a NIB (XIB) file
+    
+    //Register this NIB, which contains the cell
+    [self.tableView registerNib:nib forCellReuseIdentifier:@"KMNItemCell"];
     
 //    UIView *header = self.headerView;
 //    [self.tableView setTableHeaderView:header];
