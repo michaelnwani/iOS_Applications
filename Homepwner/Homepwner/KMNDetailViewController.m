@@ -10,8 +10,13 @@
 #import "MNItem.h"
 #import "KMNImageStore.h"
 #import "KMNItemStore.h"
+#import "KMNAssetTypeViewController.h"
+#import "KMNAppDelegate.h"
 
-@interface KMNDetailViewController ()
+@interface KMNDetailViewController () <UIViewControllerRestoration>
+
+@property (strong, nonatomic) UIPopoverController *imagePickerPopover;
+
 @property (weak, nonatomic) IBOutlet UITextField *nameField;
 @property (weak, nonatomic) IBOutlet UITextField *serialNumberField;
 @property (weak, nonatomic) IBOutlet UITextField *valueField;
@@ -21,16 +26,84 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cameraButton;
 
-@property (strong, nonatomic) UIPopoverController *imagePickerPopover;
+
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *serialNumberLabel;
+@property (weak, nonatomic) IBOutlet UILabel *valueLabel;
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *assetTypeButton;
 
 @end
 
 @implementation KMNDetailViewController
 
++(UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    BOOL isNew = NO;
+    if ([identifierComponents count] == 3)
+    {
+        isNew = YES;
+    }
+    
+    return [[self alloc] initForNewItem:isNew];
+}
+
+-(instancetype)initForNewItem:(BOOL)isNew
+{
+    self = [super initWithNibName:nil bundle:nil];
+    
+    if (self)
+    {
+        self.restorationIdentifier = NSStringFromClass([self class]);
+        self.restorationClass = [self class];
+        
+        if (isNew)
+        {
+            UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(save:)];
+            self.navigationItem.rightBarButtonItem = doneItem;
+            
+            UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
+            self.navigationItem.leftBarButtonItem = cancelItem;
+        }
+        
+        //Make sure this is NOT in the if (isNew) {} block of code
+        NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+        [defaultCenter addObserver:self
+                          selector:@selector(updateFonts)
+                              name:UIContentSizeCategoryDidChangeNotification
+                            object:nil];
+        
+    }
+    
+    return self;
+}
+
+-(void)dealloc
+{
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter removeObserver:self];
+}
+
+-(instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    [NSException raise:@"Wrong initializer" format:@"Use initForNewItem:"];
+    
+    return nil;
+}
+
 - (IBAction)backgroundTapped:(id)sender
 {
     [self.view endEditing:YES]; //causes the view or one of its subviews (a textfield) to resign its first responder status
     
+}
+- (IBAction)showAssetTypePicker:(id)sender
+{
+    [self.view endEditing:YES];
+    
+    KMNAssetTypeViewController *avc = [[KMNAssetTypeViewController alloc] init];
+    avc.item = self.item;
+    
+    [self.navigationController pushViewController:avc animated:YES];
 }
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
@@ -138,6 +211,15 @@
     
     //Use that image to put on the screen in the imageView
     self.imageView.image = imageToDisplay;
+    
+    NSString *typeLabel = [self.item.assetType valueForKey:@"label"];
+    if (!typeLabel)
+    {
+        typeLabel = @"None";
+    }
+    self.assetTypeButton.title = [NSString stringWithFormat:@"Type: %@", typeLabel];
+    
+    [self updateFonts];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -151,7 +233,19 @@
     MNItem *item = self.item; //we're now pointing to the same location in memory. how subtle.
     item.itemName = self.nameField.text;
     item.serialNumber = self.serialNumberField.text;
-    item.valueInDollars = [self.valueField.text intValue];
+    
+    int newValue = [self.valueField.text intValue];
+    
+    //Is it changed?
+    if (newValue != item.valueInDollars)
+    {
+        //Put it in the item
+        item.valueInDollars = newValue;
+        
+        //Store it as the default value for the next item
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setInteger:newValue forKey:KMNNextItemValuePrefsKey];
+    }
 }
 
 -(void)setItem:(MNItem *)item
@@ -237,31 +331,7 @@
 }
 
 
--(instancetype)initForNewItem:(BOOL)isNew
-{
-    self = [super initWithNibName:nil bundle:nil];
-    
-    if (self)
-    {
-        if (isNew)
-        {
-            UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(save:)];
-            self.navigationItem.rightBarButtonItem = doneItem;
-            
-            UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
-            self.navigationItem.leftBarButtonItem = cancelItem;
-        }
-    }
-    
-    return self;
-}
 
--(instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    [NSException raise:@"Wrong initializer" format:@"Use initForNewItem:"];
-    
-    return nil;
-}
 
 -(void)save:(id)sender
 {
@@ -280,4 +350,50 @@
 
 }
 
+-(void)updateFonts
+{
+    UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    
+    self.nameLabel.font = font;
+    self.serialNumberLabel.font = font;
+    self.valueLabel.font = font;
+    self.dateLabel.font = font;
+    
+    self.nameField.font = font;
+    self.serialNumberField.font = font;
+    self.valueField.font = font;
+    
+}
+
+
+-(void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:self.item.itemKey forKey:@"item.itemKey"];
+    
+    //Save changes into item
+    self.item.itemName = self.nameField.text;
+    self.item.serialNumber = self.serialNumberField.text;
+    self.item.valueInDollars = self.valueField.text;
+    
+    //Have store save changes to disk
+    [[KMNItemStore sharedStore] saveChanges];
+    
+    [super encodeRestorableStateWithCoder:coder];
+}
+
+-(void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    NSString *itemKey = [coder decodeObjectForKey:@"item.itemKey"];
+    
+    for (MNItem *item in [[KMNItemStore sharedStore] allItems])
+    {
+        if ([itemKey isEqualToString:itemKey])
+        {
+            self.item = item;
+            break;
+        }
+    }
+    
+    [super decodeRestorableStateWithCoder:coder];
+}
 @end

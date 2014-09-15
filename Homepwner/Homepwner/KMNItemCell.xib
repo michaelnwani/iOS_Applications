@@ -18,7 +18,6 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="bbP-DW-vZn"/>
-                            <constraint firstAttribute="height" constant="21" id="eZI-nh-u2g"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -35,7 +34,6 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="Bb8-NU-3Yi"/>
-                            <constraint firstAttribute="height" constant="21" id="Mgk-Ep-1aZ"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -45,7 +43,7 @@
                         <rect key="frame" x="0.0" y="2" width="40" height="40"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="40" id="BlZ-PK-oWG"/>
+                            <constraint firstAttribute="width" constant="40" placeholder="YES" id="BlZ-PK-oWG"/>
                             <constraint firstAttribute="height" constant="40" id="qiy-DG-x6n"/>
                         </constraints>
                     </imageView>
@@ -84,6 +82,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="imageViewHeightConstraint" destination="qiy-DG-x6n" id="mPS-17-9lC"/>
                 <outlet property="nameLabel" destination="ghq-OT-dO3" id="gA7-Jf-xcD"/>
                 <outlet property="serialNumberLabel" destination="aCG-tR-OW8" id="sJe-37-ehw"/>
                 <outlet property="thumbnailView" destination="hat-Cr-hS0" id="SW0-GQ-hKF"/>

@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "02EA47D119BCDCD700554C10"
-               BuildableName = "Homepwner.app"
-               BlueprintName = "Homepwner"
-               ReferencedContainer = "container:Homepwner.xcodeproj">
+               BlueprintIdentifier = "020FE42319C4CE4B00710310"
+               BuildableName = "Nerdfeed.app"
+               BlueprintName = "Nerdfeed"
+               ReferencedContainer = "container:Nerdfeed.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,20 +32,20 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "02EA47EC19BCDCD700554C10"
-               BuildableName = "HomepwnerTests.xctest"
-               BlueprintName = "HomepwnerTests"
-               ReferencedContainer = "container:Homepwner.xcodeproj">
+               BlueprintIdentifier = "020FE43E19C4CE4B00710310"
+               BuildableName = "NerdfeedTests.xctest"
+               BlueprintName = "NerdfeedTests"
+               ReferencedContainer = "container:Nerdfeed.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "02EA47D119BCDCD700554C10"
-            BuildableName = "Homepwner.app"
-            BlueprintName = "Homepwner"
-            ReferencedContainer = "container:Homepwner.xcodeproj">
+            BlueprintIdentifier = "020FE42319C4CE4B00710310"
+            BuildableName = "Nerdfeed.app"
+            BlueprintName = "Nerdfeed"
+            ReferencedContainer = "container:Nerdfeed.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -61,22 +61,12 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "02EA47D119BCDCD700554C10"
-            BuildableName = "Homepwner.app"
-            BlueprintName = "Homepwner"
-            ReferencedContainer = "container:Homepwner.xcodeproj">
+            BlueprintIdentifier = "020FE42319C4CE4B00710310"
+            BuildableName = "Nerdfeed.app"
+            BlueprintName = "Nerdfeed"
+            ReferencedContainer = "container:Nerdfeed.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-com.apple.CoreData.SQLDebug"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "1"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -89,10 +79,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "02EA47D119BCDCD700554C10"
-            BuildableName = "Homepwner.app"
-            BlueprintName = "Homepwner"
-            ReferencedContainer = "container:Homepwner.xcodeproj">
+            BlueprintIdentifier = "020FE42319C4CE4B00710310"
+            BuildableName = "Nerdfeed.app"
+            BlueprintName = "Nerdfeed"
+            ReferencedContainer = "container:Nerdfeed.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

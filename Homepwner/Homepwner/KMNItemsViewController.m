@@ -15,7 +15,7 @@
 #import "KMNImageViewController.h"
 
 
-@interface KMNItemsViewController () <UIPopoverControllerDelegate>
+@interface KMNItemsViewController () <UIPopoverControllerDelegate, UIViewControllerRestoration, UIDataSourceModelAssociation>
 
 //@property (nonatomic, strong) IBOutlet UIView *headerView;
 @property (strong, nonatomic) UIPopoverController *imagePopover;
@@ -25,6 +25,12 @@
 
 
 @implementation KMNItemsViewController
+
++(UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    return [[self alloc] init];
+}
+
 
 #pragma mark - XIB file implementations
 //-(UIView *)headerView
@@ -63,6 +69,7 @@
     };
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:detailViewController];
+    navController.restorationIdentifier = NSStringFromClass([navController class]);
     navController.modalPresentationStyle = UIModalPresentationFormSheet; //For iPad
     navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve; //A fade-in style for modal view controllers. Default is CoverVertical (slide up from the bottom)
     [self presentViewController:navController animated:YES completion:NULL];
@@ -100,6 +107,9 @@
         UINavigationItem *navItem = self.navigationItem;
         navItem.title = @"Homepwner";
         
+        self.restorationIdentifier = NSStringFromClass([self class]);
+        self.restorationClass = [self class];
+        
         //Create a new bar button item that will send addNewItem: to KMNItemsViewController
         UIBarButtonItem *bbi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewItem:)];
         
@@ -107,21 +117,27 @@
         navItem.rightBarButtonItem = bbi;
         
         navItem.leftBarButtonItem = self.editButtonItem;
+        
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self
+               selector:@selector(updateTableViewForDynamicTypeSize)
+                   name:UIContentSizeCategoryDidChangeNotification
+                 object:nil];
     }
     
     return self;
+}
+
+-(void)dealloc
+{
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc removeObserver:self];
 }
 
 -(instancetype)initWithStyle:(UITableViewStyle)style
 {
     return [self init];
 }
-
-
-
-
-
-
 
 
 
@@ -251,6 +267,8 @@
     //Register this NIB, which contains the cell
     [self.tableView registerNib:nib forCellReuseIdentifier:@"KMNItemCell"];
     
+    self.tableView.restorationIdentifier = @"KMNItemsViewControllerTableView";
+    
 //    UIView *header = self.headerView;
 //    [self.tableView setTableHeaderView:header];
 }
@@ -260,6 +278,82 @@
 {
     [super viewWillAppear:animated];
     
+//    [self.tableView reloadData]; OLD IMPLEMENTATION
+    [self updateTableViewForDynamicTypeSize];
+}
+
+-(void)updateTableViewForDynamicTypeSize
+{
+    static NSDictionary *cellHeightDictionary;
+    
+    if (!cellHeightDictionary)
+    {
+        cellHeightDictionary = @{ UIContentSizeCategoryExtraSmall : @44,
+                                  UIContentSizeCategorySmall : @44,
+                                  UIContentSizeCategoryMedium : @44,
+                                  UIContentSizeCategoryLarge : @44,
+                                  UIContentSizeCategoryExtraLarge : @55,
+                                  UIContentSizeCategoryExtraExtraLarge : @65,
+                                  UIContentSizeCategoryExtraExtraExtraLarge : @75
+                                 };
+    }
+    
+    NSString *userSize = [[UIApplication sharedApplication] preferredContentSizeCategory];
+    
+    NSNumber *cellHeight = cellHeightDictionary[userSize];
+    [self.tableView setRowHeight:cellHeight.floatValue];
     [self.tableView reloadData];
 }
+
+-(void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [coder encodeBool:self.isEditing forKey:@"TableViewIsEditing"];
+    
+    [super encodeRestorableStateWithCoder:coder];
+}
+
+-(void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    self.editing = [coder decodeBoolForKey:@"TableViewIsEditing"];
+    
+    [super decodeRestorableStateWithCoder:coder];
+    
+}
+
+-(NSString *)modelIdentifierForElementAtIndexPath:(NSIndexPath *)idx
+                                           inView:(UIView *)view
+{
+    NSString *identifier = nil;
+    
+    if (idx && view)
+    {
+        //Return an identifier of the given NSIndexPath, in case next time the data source changes
+        MNItem *item = [[KMNItemStore sharedStore] allItems][idx.row];
+        identifier = item.itemKey;
+    }
+    
+    return identifier;
+}
+
+-(NSIndexPath *)indexPathForElementWithModelIdentifier:(NSString *)identifier inView:(UIView *)view
+{
+    NSIndexPath *indexPath = nil;
+    
+    if (identifier && view)
+    {
+        NSArray *items = [[KMNItemStore sharedStore] allItems];
+        for (MNItem *item in items)
+        {
+            if ([identifier isEqualToString:item.itemKey])
+            {
+                int row = [items indexOfObjectIdenticalTo:item];
+                indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+                break;
+            }
+        }
+    }
+    
+    return indexPath;
+}
+
 @end
